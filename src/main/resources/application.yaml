@@ -1,0 +1,62 @@
+spring:
+  application:
+    name: locations
+  main:
+    banner-mode: "off"
+  jackson:
+    deserialization:
+      USE_BIG_DECIMAL_FOR_FLOATS: true
+      FAIL_ON_UNKNOWN_PROPERTIES: true
+  flyway:
+    baseline-on-migrate: true
+  datasource:
+    url: "jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:postgres}?currentSchema=${DB_SCHEMA:locations}"
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+    generate-ddl: false
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  jta:
+    enabled: true
+  cloud:
+    function:
+      definition: commands;countryCommands;events;countryEventStore;countryProjection
+    stream:
+      bindings:
+        countryCommands-in-0:
+          destination: country_commands
+          group: command_bus_group
+        countryCommands-out-0:
+          destination: country_commands
+        countryEventStore-in-0:
+          destination: country_events
+          group: repository_group
+        countryProjection-in-0:
+          destination: country_events
+          group: projection_group
+        countryEvents-out-0:
+          destination: country_events
+      kafka:
+        bindings:
+          countryCommands-in-0:
+            consumer:
+              start-offset: earliest
+          countryEventStore-in-0:
+            consumer:
+              start-offset: earliest
+          countryProjection-in-0:
+            consumer:
+              start-offset: earliest
+        binder:
+          brokers: ${BOKER_HOST:}
+          consumer-properties:
+            key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+          producer-properties:
+            key.serializer: org.apache.kafka.common.serialization.StringSerializer

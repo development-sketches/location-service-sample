@@ -1,11 +1,11 @@
 package ca.softwareadd.domain.commands
 
-import ca.softwareadd.country.CREATE_COUNTRY_COMMAND
 import ca.softwareadd.country.Country
 import ca.softwareadd.country.CountryCreatedEvent
 import ca.softwareadd.country.CreateCountryCommand
 import ca.softwareadd.domain.aggregate.AggregateRepository
 import ca.softwareadd.domain.resolvers.CommandHandlerResolver
+import ca.softwareadd.domain.resolvers.CommandTypeResolver
 import ca.softwareadd.domain.routers.CommandRouter
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -25,11 +25,14 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.util.*
 
+private const val CREATE_COUNTRY_COMMAND = "create-country"
+
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(classes = [
     CommandBus::class,
     CommandRouter::class,
-    CommandHandlerResolver::class
+    CommandHandlerResolver::class,
+    CommandTypeResolver::class
 ])
 @Import(CommandBusTest.TestConfiguration::class)
 internal class CommandBusTest {

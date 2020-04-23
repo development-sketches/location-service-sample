@@ -6,6 +6,4 @@ import kotlin.annotation.AnnotationTarget.FUNCTION
 
 @Target(CONSTRUCTOR, FUNCTION)
 @Retention(RUNTIME)
-annotation class CommandHandler(
-        val type: String
-)
+annotation class CommandHandler

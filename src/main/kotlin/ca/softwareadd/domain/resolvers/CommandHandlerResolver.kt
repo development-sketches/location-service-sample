@@ -7,14 +7,17 @@ import kotlin.reflect.full.declaredMemberFunctions
 import kotlin.reflect.full.findAnnotation
 
 @Service
-class CommandHandlerResolver : HandlerResolver {
+class CommandHandlerResolver(
+        private val commandTypeResolver: CommandTypeResolver
+) : HandlerResolver {
 
     override fun findHandler(klass: KClass<*>, type: String) =
             klass.declaredMemberFunctions.asSequence()
                     .firstOrNull {
-                        it.parameters.size == 2 &&
+                        it.findAnnotation<CommandHandler>() != null &&
+                                it.parameters.size == 2 &&
                                 it.parameters[0].type.classifier == klass &&
-                                it.findAnnotation<CommandHandler>()?.type == type
+                                commandTypeResolver.commandType(it.parameters[1].type.classifier as KClass<*>) == type
                     }
 
 }

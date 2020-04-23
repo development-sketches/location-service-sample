@@ -5,6 +5,4 @@ import kotlin.annotation.AnnotationTarget.CLASS
 
 @Target(CLASS)
 @Retention(RUNTIME)
-annotation class Event(
-        val type: String = ""
-)
+annotation class Event(val type: String = "")

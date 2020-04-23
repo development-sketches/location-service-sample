@@ -1,6 +1,5 @@
 package ca.softwareadd.domain.resolvers
 
-import ca.softwareadd.country.CREATE_COUNTRY_COMMAND
 import ca.softwareadd.country.Country
 import ca.softwareadd.country.CreateCountryCommand
 import ca.softwareadd.domain.events.EventEntity
@@ -12,8 +11,13 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.util.*
 
+private const val CREATE_COUNTRY_COMMAND = "create-country"
+
 @ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [CommandHandlerResolver::class])
+@ContextConfiguration(classes = [
+    CommandHandlerResolver::class,
+    CommandTypeResolver::class
+])
 internal class CommandHandlerResolverTest {
 
     @Autowired

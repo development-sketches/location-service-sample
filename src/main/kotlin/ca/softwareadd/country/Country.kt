@@ -45,7 +45,7 @@ class Country(
         state = CountryAggregateState.EXISTING
     }
 
-    @CommandHandler(CREATE_COUNTRY_COMMAND)
+    @CommandHandler
     fun createCountry(command: CreateCountryCommand) {
         if (state == CountryAggregateState.NEW) {
             with(command) {

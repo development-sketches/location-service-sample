@@ -1,13 +1,6 @@
 package ca.softwareadd.country
 
-import ca.softwareadd.domain.commands.Command
-
-const val CREATE_COUNTRY_COMMAND = "create-country"
-
-abstract class CountryCommand(override val type: String) :
-        Command
-
-class CreateCountryCommand : CountryCommand(CREATE_COUNTRY_COMMAND) {
+class CreateCountryCommand {
 
     lateinit var alpha2code: String
 

@@ -59,7 +59,6 @@ internal class CountryControllerTest {
 
         val command = captor.value
 
-        assertEquals(CREATE_COUNTRY_COMMAND, command.type)
         assertEquals("CA", command.alpha2code)
         assertEquals("CAN", command.alpha3code)
         assertEquals("Canada", command.fullName)

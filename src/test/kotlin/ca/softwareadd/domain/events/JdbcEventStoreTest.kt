@@ -1,6 +1,5 @@
 package ca.softwareadd.domain.events
 
-import ca.softwareadd.country.COUNTRY_CREATED_EVENT
 import ca.softwareadd.country.Country
 import ca.softwareadd.country.CountryCreatedEvent
 import ca.softwareadd.domain.resolvers.StreamResolver
@@ -19,18 +18,20 @@ import java.time.ZonedDateTime
 import java.util.*
 import javax.sql.DataSource
 
+private const val COUNTRY_CREATED_EVENT = "country-created"
+
 @JdbcTest
 @ContextConfiguration(classes = [
     StreamResolver::class,
-    JdbcEventRepository::class
+    JdbcEventStore::class
 ])
-internal class JdbcEventRepositoryTest {
+internal class JdbcEventStoreTest {
 
     @Autowired
     private lateinit var dataSource: DataSource
 
     @Autowired
-    private lateinit var repository: JdbcEventRepository
+    private lateinit var repository: JdbcEventStore
 
     @Test
     internal fun `test adding a new event`() {
@@ -39,7 +40,7 @@ internal class JdbcEventRepositoryTest {
         val event = CountryCreatedEvent("CA", "CAN", "Canada", "123", "Canada")
         val entity = EventEntity().apply {
             id = UUID.randomUUID()
-            type = event.type
+            type = COUNTRY_CREATED_EVENT
             timestamp = ZonedDateTime.now()
             json = ObjectMapper().writeValueAsString(event)
         }
@@ -57,7 +58,7 @@ internal class JdbcEventRepositoryTest {
         val event = CountryCreatedEvent("CA", "CAN", "Canada", "123", "Canada")
         val entity = EventEntity().apply {
             id = UUID.randomUUID()
-            type = event.type
+            type = COUNTRY_CREATED_EVENT
             timestamp = ZonedDateTime.now()
             json = ObjectMapper().writeValueAsString(event)
         }

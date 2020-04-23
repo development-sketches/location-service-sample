@@ -16,7 +16,7 @@ class CountryProjectionHandler(
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
-    @EventHandler(COUNTRY_CREATED_EVENT)
+    @EventHandler
     fun countryCreated(id: UUID, event: CountryCreatedEvent) {
         try {
             val entity = CountryEntity().apply {

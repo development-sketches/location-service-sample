@@ -12,10 +12,10 @@ import kotlin.reflect.KClass
 
 
 @Repository
-class JdbcEventRepository(
+class JdbcEventStore(
         dataSource: DataSource,
         private val streamResolver: StreamResolver
-) : EventRepository {
+) : EventStore {
 
     private val jdbcTemplate = NamedParameterJdbcTemplate(dataSource)
 

@@ -1,9 +1,9 @@
 package ca.softwareadd.domain.routers
 
-import ca.softwareadd.country.COUNTRY_CREATED_EVENT
 import ca.softwareadd.country.Country
 import ca.softwareadd.country.CountryCreatedEvent
 import ca.softwareadd.domain.resolvers.EventHandlerResolver
+import ca.softwareadd.domain.resolvers.EventTypeResolver
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -17,8 +17,14 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.util.*
 
+private const val COUNTRY_CREATED_EVENT = "country-created"
+
 @ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [EventRouter::class, EventHandlerResolver::class])
+@ContextConfiguration(classes = [
+    EventRouter::class,
+    EventHandlerResolver::class,
+    EventTypeResolver::class
+])
 @Import(EventRouterTest.TestConfiguration::class)
 internal class EventRouterTest {
 

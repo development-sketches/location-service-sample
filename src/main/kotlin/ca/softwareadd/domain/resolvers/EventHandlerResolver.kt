@@ -8,23 +8,26 @@ import kotlin.reflect.full.declaredMemberFunctions
 import kotlin.reflect.full.findAnnotation
 
 @Service
-class EventHandlerResolver : HandlerResolver {
+class EventHandlerResolver(
+        private val eventTypeResolver: EventTypeResolver
+) : HandlerResolver {
 
-    fun findHandler(klass: KClass<*>, eventClass: KClass<*>, type: String): KFunction<*>? =
+    fun findHandler(klass: KClass<*>, eventClass: KClass<*>): KFunction<*>? =
             klass.declaredMemberFunctions.asSequence()
                     .firstOrNull {
-                        it.parameters.size == 2 &&
+                        it.findAnnotation<EventHandler>() != null &&
+                                it.parameters.size == 2 &&
                                 it.parameters[0].type.classifier == klass &&
-                                it.parameters[1].type.classifier == eventClass &&
-                                it.findAnnotation<EventHandler>()?.type == type
+                                it.parameters[1].type.classifier == eventClass
                     }
 
     override fun findHandler(klass: KClass<*>, type: String) =
             klass.declaredMemberFunctions.asSequence()
                     .firstOrNull {
-                        it.parameters.size == 2 &&
+                        it.findAnnotation<EventHandler>() != null &&
+                                it.parameters.size == 2 &&
                                 it.parameters[0].type.classifier == klass &&
-                                it.findAnnotation<EventHandler>()?.type == type
+                                eventTypeResolver.eventType(it.parameters[1].type.classifier as KClass<*>) == type
                     }
 
 }

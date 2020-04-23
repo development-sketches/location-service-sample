@@ -1,11 +1,11 @@
 package ca.softwareadd.domain.aggregate
 
-import ca.softwareadd.country.COUNTRY_CREATED_EVENT
 import ca.softwareadd.country.Country
 import ca.softwareadd.country.CountryCreatedEvent
 import ca.softwareadd.domain.events.EventEntity
 import ca.softwareadd.domain.resolvers.AggregateConstructorResolver
 import ca.softwareadd.domain.resolvers.EventHandlerResolver
+import ca.softwareadd.domain.resolvers.EventTypeResolver
 import ca.softwareadd.domain.routers.EventRouter
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -25,7 +25,8 @@ import java.util.*
     AggregateFactory::class,
     EventRouter::class,
     AggregateConstructorResolver::class,
-    EventHandlerResolver::class
+    EventHandlerResolver::class,
+    EventTypeResolver::class
 ])
 @Import(AggregateFactoryTest.TestConfiguration::class)
 internal class AggregateFactoryTest {
@@ -51,7 +52,7 @@ internal class AggregateFactoryTest {
         val history = listOf(
                 EventEntity().apply {
                     this.id = id
-                    type = COUNTRY_CREATED_EVENT
+                    type = "country-created"
                     this.json = json
                 }
         )

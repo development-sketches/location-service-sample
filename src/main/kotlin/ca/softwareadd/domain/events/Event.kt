@@ -1,7 +1,10 @@
 package ca.softwareadd.domain.events
 
-interface Event {
+import kotlin.annotation.AnnotationRetention.RUNTIME
+import kotlin.annotation.AnnotationTarget.CLASS
 
-    val type: String
-
-}
+@Target(CLASS)
+@Retention(RUNTIME)
+annotation class Event(
+        val type: String = ""
+)

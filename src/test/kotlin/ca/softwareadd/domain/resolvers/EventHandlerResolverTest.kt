@@ -1,6 +1,5 @@
 package ca.softwareadd.domain.resolvers
 
-import ca.softwareadd.country.COUNTRY_CREATED_EVENT
 import ca.softwareadd.country.Country
 import ca.softwareadd.country.CountryCreatedEvent
 import ca.softwareadd.domain.events.EventEntity
@@ -12,8 +11,13 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.util.*
 
+private const val COUNTRY_CREATED_EVENT = "country-created"
+
 @ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [EventHandlerResolver::class])
+@ContextConfiguration(classes = [
+    EventHandlerResolver::class,
+    EventTypeResolver::class
+])
 internal class EventHandlerResolverTest {
 
     @Autowired
@@ -30,7 +34,7 @@ internal class EventHandlerResolverTest {
 
     @Test
     internal fun `resolver should return method with given parameter type`() {
-        val handler = resolver.findHandler(Country::class, CountryCreatedEvent::class, COUNTRY_CREATED_EVENT)
+        val handler = resolver.findHandler(Country::class, CountryCreatedEvent::class)
         assertNotNull(handler)
         assertEquals(2, handler?.parameters?.size)
         assertEquals(Country::class, handler?.parameters?.get(0)?.type?.classifier)
@@ -44,14 +48,8 @@ internal class EventHandlerResolverTest {
     }
 
     @Test
-    internal fun `resolver should return null if parameter type mismatch`() {
-        val handler = resolver.findHandler(Country::class, EventEntity::class, COUNTRY_CREATED_EVENT)
-        assertNull(handler)
-    }
-
-    @Test
     internal fun `resolver should return null if no annotated handlers`() {
-        val handler = resolver.findHandler(EventEntity::class, CountryCreatedEvent::class, COUNTRY_CREATED_EVENT)
+        val handler = resolver.findHandler(EventEntity::class, CountryCreatedEvent::class)
         assertNull(handler)
     }
 }

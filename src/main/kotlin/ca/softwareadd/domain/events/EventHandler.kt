@@ -5,6 +5,4 @@ import kotlin.annotation.AnnotationTarget.FUNCTION
 
 @Target(FUNCTION)
 @Retention(RUNTIME)
-annotation class EventHandler(
-        val type: String
-)
+annotation class EventHandler

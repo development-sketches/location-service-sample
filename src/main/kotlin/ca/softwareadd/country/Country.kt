@@ -34,7 +34,7 @@ class Country(
 
     private var state = CountryAggregateState.NEW
 
-    @EventHandler(COUNTRY_CREATED_EVENT)
+    @EventHandler
     fun countryCreated(event: CountryCreatedEvent) {
         alpha2code = event.alpha2code
         alpha3code = event.alpha3code

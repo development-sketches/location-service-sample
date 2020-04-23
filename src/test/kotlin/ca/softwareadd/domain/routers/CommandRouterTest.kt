@@ -1,7 +1,9 @@
 package ca.softwareadd.domain.routers
 
-import ca.softwareadd.country.*
-import ca.softwareadd.domain.events.Event
+import ca.softwareadd.country.CREATE_COUNTRY_COMMAND
+import ca.softwareadd.country.Country
+import ca.softwareadd.country.CountryCreatedEvent
+import ca.softwareadd.country.CreateCountryCommand
 import ca.softwareadd.domain.resolvers.CommandHandlerResolver
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -28,7 +30,7 @@ internal class CommandRouterTest {
 
     @Test
     internal fun `test handler invocation`() {
-        val events = mutableListOf<Event>()
+        val events = mutableListOf<Any>()
 
         val country = Country(UUID.randomUUID()) { _, event -> events.add(event) }
 
@@ -51,7 +53,6 @@ internal class CommandRouterTest {
         assertEquals(command.fullName, event.fullName)
         assertEquals(command.numericCode, event.numericCode)
         assertEquals(command.shortName, event.shortName)
-        assertEquals(COUNTRY_CREATED_EVENT, event.type)
     }
 
     @Configuration

@@ -4,10 +4,11 @@ import ca.softwareadd.country.Country
 import ca.softwareadd.country.CountryCreatedEvent
 import ca.softwareadd.country.CreateCountryCommand
 import ca.softwareadd.domain.events.EventEntity
-import ca.softwareadd.domain.events.EventRepository
 import ca.softwareadd.domain.events.EventSender
+import ca.softwareadd.domain.events.EventStore
 import ca.softwareadd.domain.resolvers.AggregateConstructorResolver
 import ca.softwareadd.domain.resolvers.EventHandlerResolver
+import ca.softwareadd.domain.resolvers.EventTypeResolver
 import ca.softwareadd.domain.routers.EventRouter
 import ca.softwareadd.utils.anyK
 import ca.softwareadd.utils.eqK
@@ -31,6 +32,7 @@ import java.util.*
     AggregateFactory::class,
     AggregateConstructorResolver::class,
     EventHandlerResolver::class,
+    EventTypeResolver::class,
     EventRouter::class,
     AggregateRepository::class
 ])
@@ -38,7 +40,7 @@ import java.util.*
 internal class AggregateRepositoryTest {
 
     @MockBean
-    private lateinit var eventRepository: EventRepository
+    private lateinit var eventStore: EventStore
 
     @MockBean
     private lateinit var eventSender: EventSender
@@ -58,16 +60,16 @@ internal class AggregateRepositoryTest {
         val history = listOf(
                 EventEntity().apply {
                     this.id = id
-                    type = event.type
+                    type = "country-created"
                     this.json = json
                 }
         )
 
-        given(eventRepository.findAllById(Country::class, id)).willReturn(history)
+        given(eventStore.findAllById(Country::class, id)).willReturn(history)
 
         val country = repository.findById(Country::class, id)
 
-        verify(eventRepository, times(1))
+        verify(eventStore, times(1))
                 .findAllById(eqK(Country::class), eqK(id))
 
         assertEquals(id, country.id)
@@ -82,11 +84,11 @@ internal class AggregateRepositoryTest {
     internal fun `return a new aggregate if no history`() {
         val id = UUID.randomUUID()
 
-        given(eventRepository.findAllById(Country::class, id)).willReturn(emptyList())
+        given(eventStore.findAllById(Country::class, id)).willReturn(emptyList())
 
         val country = repository.findById(Country::class, id)
 
-        verify(eventRepository, times(1))
+        verify(eventStore, times(1))
                 .findAllById(eqK(Country::class), eqK(id))
 
         assertEquals(id, country.id)
@@ -96,7 +98,7 @@ internal class AggregateRepositoryTest {
     internal fun `send an event received from the aggregate`() {
         val id = UUID.randomUUID()
 
-        given(eventRepository.findAllById(Country::class, id)).willReturn(emptyList())
+        given(eventStore.findAllById(Country::class, id)).willReturn(emptyList())
 
         val country = repository.findById(Country::class, id)
 
@@ -109,14 +111,7 @@ internal class AggregateRepositoryTest {
         }
         country.createCountry(command)
 
-        verify(eventSender, times(1))
-                .send(eqK(Country::class), anyK(), anyK())
-
-        assertEquals(command.alpha2code, country.alpha2code)
-        assertEquals(command.alpha3code, country.alpha3code)
-        assertEquals(command.fullName, country.fullName)
-        assertEquals(command.numericCode, country.numericCode)
-        assertEquals(command.shortName, country.shortName)
+        verify(eventSender, times(1)).send(eqK(country), anyK())
     }
 
     @Configuration
